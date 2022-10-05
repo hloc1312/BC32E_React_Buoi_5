@@ -7,23 +7,46 @@ class DanhSach extends Component {
     search: "",
     arrSearch: [],
   };
+  //handle change search
+  handleChangeSearch = (e) => {
+    this.setState({
+      search: e.target.value,
+    });
+    // let value = e.target.value;
+    // console.log(value);
+    // console.log(this.state.search);
+    // const data = [...this.props.mangSinhVien];
+    // if (this.state.search !== "") {
+    //   // console.log(123);
+    //   const search = data.filter((item) => {
+    //     // console.log(456);
+    //     console.log(
+    //       item.hoTen.toLowerCase().includes(this.state.search.toLowerCase())
+    //     );
+    //     return item.hoTen
+    //       .toLowerCase()
+    //       .includes(this.state.search.toLowerCase());
+    //   });
+    //   this.setState({
+    //     arrSearch: search,
+    //   });
+    // } else {
+    //   // console.log(this.props.mangSinhVien);
+    //   this.setState({
+    //     arrSearch: this.props.mangSinhVien,
+    //   });
+    // }
+  };
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.dispatch(searchUser(this.state.search));
-    // let searchName = this.state.search.toLowerCase();
-    // const data = [...this.props.mangSinhVien];
-    // let result = data.filter((item) =>
-    //   item.hoTen.toLowerCase().includes(searchName)
-    // );
-    // // console.log(result);
-    // this.setState({
-    //   arrSearch: result,
-    // });
   };
   render() {
-    // console.log(this.state.arrSearch);
-    // console.log(this.state.search);
     const { mangSinhVien, searchUser } = this.props;
+    const filter = mangSinhVien.filter((item) => {
+      return item.hoTen.toLowerCase().includes(this.state.search.toLowerCase());
+    });
     return (
       <div className="mt-5">
         <h1 className="capitalize text-3xl text-white bg-black p-4 font-bold">
@@ -34,7 +57,8 @@ class DanhSach extends Component {
             type="text"
             className="p-2 mt-2 border-2 rounded-sm border-gray-200 outline-none focus:border-blue-500 w-full"
             placeholder="Search..."
-            onChange={(e) => this.setState({ search: e.target.value })}
+            name="search"
+            onChange={this.handleChangeSearch}
           />
           <button className="absolute top-[16px] right-[15px]">
             <i className="fa-solid fa-magnifying-glass"></i>
@@ -52,8 +76,8 @@ class DanhSach extends Component {
             </tr>
           </thead>
           <tbody>
-            {searchUser
-              ? searchUser.map((item) => {
+            {/* {this.state.search.trim().length > 0
+              ? this.state.arrSearch.map((item) => {
                   return (
                     <tr
                       className="border-b border-opacity-20 text-[18px] "
@@ -114,7 +138,35 @@ class DanhSach extends Component {
                       </td>
                     </tr>
                   );
-                })}
+                })} */}
+
+            {filter.map((item) => {
+              return (
+                <tr
+                  className="border-b border-opacity-20 text-[18px] "
+                  key={item.maSV}
+                >
+                  <td className="p-3">{item.maSV}</td>
+                  <td className="p-3">{item.hoTen}</td>
+                  <td className="p-3">{item.phoneNumber}</td>
+                  <td className="p-3">{item.email}</td>
+                  <td>
+                    <button
+                      className="p-3 bg-red-500 text-white hover:bg-red-700 mr-4"
+                      onClick={() => this.props.dispatch(deleteUser(item.maSV))}
+                    >
+                      Xóa
+                    </button>
+                    <button
+                      className="p-3 bg-yellow-500 text-white hover:bg-yellow-700"
+                      onClick={() => this.props.dispatch(editUser(item.maSV))}
+                    >
+                      Sửa
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
